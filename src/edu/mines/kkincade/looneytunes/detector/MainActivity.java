@@ -52,13 +52,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 	private static final String TAG = "LOONEY_TUNES_DETECTOR";
 	private static final int BUGS_BUNNY_ID = 0;
 	private static final int LOLA_BUNNY_ID = 1;
-	private static final int DAFFY_DUCK_ID = 2;
-	private static final int YOSEMITE_SAM_ID = 3;
-	private static final int TASMANIAN_DEVIL_ID = 4;
+//	private static final int FOGHORN_LEGHORN_ID = 2;
+	private static final int YOSEMITE_SAM_ID = 2;
+	private static final int TASMANIAN_DEVIL_ID = 3;
 	
 	private static final String BUGS_BUNNY = "Bugs Bunny";
 	private static final String LOLA_BUNNY = "Lola Bunny";
-	private static final String DAFFY_DUCK = "Daffy Duck";
+//	private static final String FOGHORN_LEGHORN = "Foghorn Leghorn";
 	private static final String YOSEMITE_SAM = "Yosemite Sam";
 	private static final String TASMANIAN_DEVIL = "Tasmanian Devil";
 	
@@ -93,7 +93,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 	private Mat bugsBunny;
 	private Mat lolaBunny;
 	private Mat yosemiteSam;
-	private Mat daffyDuck;
+//	private Mat foghornLeghorn;
 	private Mat tasmanianDevil;
 	
 	private boolean[] detectedCharacters; // An array of boolean that keep track of which characters have been detected
@@ -102,13 +102,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 	private AdapterTwoLinesImage adapter;
 	private TextView statusTextView;
 	private String detectionMode;
-	private int teste1 = 1;
+//	private int test1 = 1;
 	private boolean debug;
 
 	private ListView detectedCharactersListView;
 
 	private ArrayList<ObjectList> detectedCharactersList;
-	private boolean[] objControl;
+	private boolean[] reportedCharacterAsFound;
 
 
 	@Override
@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 		// Variables
 		detectedCharactersList = new ArrayList<ObjectList>();
 		adapter = new AdapterTwoLinesImage(getApplicationContext(), detectedCharactersList);
-		objControl = new boolean[30];
+		reportedCharacterAsFound = new boolean[30];
 		debug = false;
 		detectionMode = "Parallel";
 		
@@ -164,38 +164,37 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 		@Override
 		public void handleMessage(Message message) {
 			// Detected Bugs Bunny
-			if (message.what == BUGS_BUNNY_ID && !mainActivity.objControl[message.what]) {
+			if (message.what == BUGS_BUNNY_ID && !mainActivity.reportedCharacterAsFound[message.what]) {
 				mainActivity.detectedCharactersList.add(new ObjectList(R.drawable.bugs_bunny, BUGS_BUNNY, message.obj.toString(),"file:///android_asset/Homer.html"));
-				mainActivity.objControl[message.what] = true;
+				mainActivity.reportedCharacterAsFound[BUGS_BUNNY_ID] = true;
 				AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(mainActivity.getApplicationContext(), mainActivity.detectedCharactersList);
 				mainActivity.detectedCharactersListView.setAdapter(adapter);
 				
 			// Detected Lola Bunny
-			} else if (message.what == LOLA_BUNNY_ID && !mainActivity.objControl[message.what]) {
+			} else if (message.what == LOLA_BUNNY_ID && !mainActivity.reportedCharacterAsFound[message.what]) {
 				mainActivity.detectedCharactersList.add(new ObjectList(R.drawable.lola_bunny, LOLA_BUNNY, message.obj.toString(),"file:///android_asset/Homer.html"));
-				mainActivity.objControl[message.what] = true;
+				mainActivity.reportedCharacterAsFound[LOLA_BUNNY_ID] = true;
 				AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(mainActivity.getApplicationContext(), mainActivity.detectedCharactersList);
 				mainActivity.detectedCharactersListView.setAdapter(adapter);
 				
-				
-			// Detected Daffy Duck
-			} else if (message.what == DAFFY_DUCK_ID && !mainActivity.objControl[message.what]) {
-				mainActivity.detectedCharactersList.add(new ObjectList(R.drawable.daffy_duck, DAFFY_DUCK, message.obj.toString(),"file:///android_asset/Homer.html"));
-				mainActivity.objControl[message.what] = true;
-				AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(mainActivity.getApplicationContext(), mainActivity.detectedCharactersList);
-				mainActivity.detectedCharactersListView.setAdapter(adapter);
+			// Detected Foghorn Leghorn
+//			} else if (message.what == FOGHORN_LEGHORN_ID && !mainActivity.objControl[message.what]) {
+//				mainActivity.detectedCharactersList.add(new ObjectList(R.drawable.foghorn_leghorn, FOGHORN_LEGHORN, message.obj.toString(),"file:///android_asset/Homer.html"));
+//				mainActivity.reportedCharacterAsFound[FOGHORN_LEGHORN_ID] = true;
+//				AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(mainActivity.getApplicationContext(), mainActivity.detectedCharactersList);
+//				mainActivity.detectedCharactersListView.setAdapter(adapter);
 				
 			// Detected Yosemite Sam
-			} else if (message.what == YOSEMITE_SAM_ID && !mainActivity.objControl[message.what]) {
+			} else if (message.what == YOSEMITE_SAM_ID && !mainActivity.reportedCharacterAsFound[message.what]) {
 				mainActivity.detectedCharactersList.add(new ObjectList(R.drawable.yosemite_sam, YOSEMITE_SAM, message.obj.toString(),"file:///android_asset/Homer.html"));
-				mainActivity.objControl[message.what] = true;
+				mainActivity.reportedCharacterAsFound[YOSEMITE_SAM_ID] = true;
 				AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(mainActivity.getApplicationContext(), mainActivity.detectedCharactersList);
 				mainActivity.detectedCharactersListView.setAdapter(adapter);
 				
 			// Detected Tasmanian Devil
-			} else if (message.what == TASMANIAN_DEVIL_ID && !mainActivity.objControl[message.what]) {
+			} else if (message.what == TASMANIAN_DEVIL_ID && !mainActivity.reportedCharacterAsFound[message.what]) {
 				mainActivity.detectedCharactersList.add(new ObjectList(R.drawable.tasmanian_devil, TASMANIAN_DEVIL, message.obj.toString(),"file:///android_asset/Homer.html"));
-				mainActivity.objControl[message.what] = true;
+				mainActivity.reportedCharacterAsFound[TASMANIAN_DEVIL_ID] = true;
 				AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(mainActivity.getApplicationContext(), mainActivity.detectedCharactersList);
 				mainActivity.detectedCharactersListView.setAdapter(adapter);
 				
@@ -224,7 +223,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 		trainingImages = new ArrayList<Mat>();
 		bugsBunny = new Mat();
 		lolaBunny = new Mat();
-		daffyDuck = new Mat();
+//		foghornLeghorn = new Mat();
 		yosemiteSam = new Mat();
 		tasmanianDevil = new Mat();
 
@@ -239,10 +238,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 			Imgproc.cvtColor(rawLolaBunny, lolaBunny, Imgproc.COLOR_RGB2BGR);
 			trainingImages.add(lolaBunny); // Index: 1
 			
-			// Daffy Duck
-			Mat rawDaffyDuck = Utils.loadResource(this, R.drawable.daffy_duck);
-			Imgproc.cvtColor(rawDaffyDuck, daffyDuck, Imgproc.COLOR_RGB2BGR);
-			trainingImages.add(daffyDuck); // Index: 2
+			// Foghorn Leghorn
+//			Mat rawFoghornLeghorn = Utils.loadResource(this, R.drawable.foghorn_leghorn);
+//			Imgproc.cvtColor(rawFoghornLeghorn, foghornLeghorn, Imgproc.COLOR_RGB2BGR);
+//			trainingImages.add(foghornLeghorn); // Index: 2
 			
 			// Yosemite Sam
 			Mat rawYosemiteSam = Utils.loadResource(this, R.drawable.yosemite_sam);
@@ -280,10 +279,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				public void run() {
 					LooneyTunesDetector looneyTuneDetector = new LooneyTunesDetector();
 					looneyTuneDetector.setCurrentFrame(rgbInputFrame); // Make this input frame the current frame
-					looneyTuneDetector.ProcessFrame(); // Process the new frame
+					looneyTuneDetector.processFrame(); // Process the new frame
+					
+					looneyTuneDetector.drawMatches();
+					looneyTuneDetector.drawSquare();
 					
 					// If Process() returned true, we found a character
-					if (looneyTuneDetector.Process(trainingImagesDetector.getDescriptors().get(BUGS_BUNNY_ID), BUGS_BUNNY)) {
+					if (looneyTuneDetector.process(trainingImagesDetector.getDescriptors().get(BUGS_BUNNY_ID), BUGS_BUNNY)) {
 						detectedCharacters[BUGS_BUNNY_ID] = true;
 						
 						// Send message to handler to let it know we found a match
@@ -305,10 +307,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				public void run() {
 					LooneyTunesDetector looneyTuneDetector = new LooneyTunesDetector();
 					looneyTuneDetector.setCurrentFrame(rgbInputFrame); // Make this input frame the current frame
-					looneyTuneDetector.ProcessFrame(); // Process the new frame
+					looneyTuneDetector.processFrame(); // Process the new frame
+					
+					looneyTuneDetector.drawMatches();
+					looneyTuneDetector.drawSquare();
 					
 					// If Process() returned true, we found a character
-					if (looneyTuneDetector.Process(trainingImagesDetector.getDescriptors().get(LOLA_BUNNY_ID), LOLA_BUNNY)) {
+					if (looneyTuneDetector.process(trainingImagesDetector.getDescriptors().get(LOLA_BUNNY_ID), LOLA_BUNNY)) {
 						detectedCharacters[LOLA_BUNNY_ID] = true;
 						
 						// Send message to handler to let it know we found a match
@@ -324,30 +329,33 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				lolaBunnyThread.start();
 			}
 
-			// --------------------- Daffy Duck Thread ---------------------
-			Thread daffyDuckThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					LooneyTunesDetector looneyTuneDetector = new LooneyTunesDetector();
-					looneyTuneDetector.setCurrentFrame(rgbInputFrame); // Make this input frame the current frame
-					looneyTuneDetector.ProcessFrame(); // Process the new frame
-					
-					// If Process() returned true, we found a character
-					if (looneyTuneDetector.Process(trainingImagesDetector.getDescriptors().get(DAFFY_DUCK_ID), DAFFY_DUCK)) {
-						detectedCharacters[DAFFY_DUCK_ID] = true;
-						
-						// Send message to handler to let it know we found a match
-						Message message = new Message();
-						message.what = DAFFY_DUCK_ID;
-						message.obj = looneyTuneDetector.getNumberOfGoodDetections();
-						mainHandler.sendMessage(message);
-					}
-				}
-			}, DAFFY_DUCK);
-
-			if ((getThreadByName(DAFFY_DUCK) == null) && !detectedCharacters[DAFFY_DUCK_ID] ) {
-				daffyDuckThread.start();
-			}
+			// --------------------- Foghorn Leghorn Thread ---------------------
+//			Thread foghornLeghornThread = new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//					LooneyTunesDetector looneyTuneDetector = new LooneyTunesDetector();
+//					looneyTuneDetector.setCurrentFrame(rgbInputFrame); // Make this input frame the current frame
+//					looneyTuneDetector.processFrame(); // Process the new frame
+//					
+//					looneyTuneDetector.drawMatches();
+//					looneyTuneDetector.drawSquare();
+//					
+//					// If Process() returned true, we found a character
+//					if (looneyTuneDetector.process(trainingImagesDetector.getDescriptors().get(FOGHORN_LEGHORN_ID), FOGHORN_LEGHORN)) {
+//						detectedCharacters[FOGHORN_LEGHORN_ID] = true;
+//						
+//						// Send message to handler to let it know we found a match
+//						Message message = new Message();
+//						message.what = FOGHORN_LEGHORN_ID;
+//						message.obj = looneyTuneDetector.getNumberOfGoodDetections();
+//						mainHandler.sendMessage(message);
+//					}
+//				}
+//			}, FOGHORN_LEGHORN);
+//
+//			if ((getThreadByName(FOGHORN_LEGHORN) == null) && !detectedCharacters[FOGHORN_LEGHORN_ID] ) {
+//				foghornLeghornThread.start();
+//			}
 
 			// --------------------- Yosemite Sam Thread ---------------------
 			Thread yosemiteSamThread = new Thread(new Runnable() {
@@ -355,10 +363,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				public void run() {
 					LooneyTunesDetector looneyTuneDetector = new LooneyTunesDetector();
 					looneyTuneDetector.setCurrentFrame(rgbInputFrame); // Make this input frame the current frame
-					looneyTuneDetector.ProcessFrame(); // Process the new frame
+					looneyTuneDetector.processFrame(); // Process the new frame
+					
+					looneyTuneDetector.drawMatches();
+					looneyTuneDetector.drawSquare();
 					
 					// If Process() returned true, we found a character
-					if (looneyTuneDetector.Process(trainingImagesDetector.getDescriptors().get(YOSEMITE_SAM_ID), YOSEMITE_SAM)) {
+					if (looneyTuneDetector.process(trainingImagesDetector.getDescriptors().get(YOSEMITE_SAM_ID), YOSEMITE_SAM)) {
 						detectedCharacters[YOSEMITE_SAM_ID] = true;
 						
 						// Send message to handler to let it know we found a match
@@ -380,10 +391,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				public void run() {
 					LooneyTunesDetector looneyTuneDetector = new LooneyTunesDetector();
 					looneyTuneDetector.setCurrentFrame(rgbInputFrame); // Make this input frame the current frame
-					looneyTuneDetector.ProcessFrame(); // Process the new frame
+					looneyTuneDetector.processFrame(); // Process the new frame
+					
+					looneyTuneDetector.drawMatches();
+					looneyTuneDetector.drawSquare();
 					
 					// If Process() returned true, we found a character
-					if (looneyTuneDetector.Process(trainingImagesDetector.getDescriptors().get(TASMANIAN_DEVIL_ID), TASMANIAN_DEVIL)) {
+					if (looneyTuneDetector.process(trainingImagesDetector.getDescriptors().get(TASMANIAN_DEVIL_ID), TASMANIAN_DEVIL)) {
 						detectedCharacters[TASMANIAN_DEVIL_ID] = true;
 						
 						// Send message to handler to let it know we found a match
@@ -403,11 +417,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 
 			LooneyTunesDetector looneyTunesDetector = new LooneyTunesDetector();
 			looneyTunesDetector.setCurrentFrame(rgbInputFrame);
-			looneyTunesDetector.ProcessFrame();
+			looneyTunesDetector.processFrame();
 			
 			if (debug) { looneyTunesDetector.drawMatches(); }
 
-			if (looneyTunesDetector.Process(trainingImagesDetector.getDescriptors().get(BUGS_BUNNY_ID), BUGS_BUNNY)) {
+			if (looneyTunesDetector.process(trainingImagesDetector.getDescriptors().get(BUGS_BUNNY_ID), BUGS_BUNNY)) {
 				detectedCharacters[BUGS_BUNNY_ID] = true;
 				Message message = new Message();
 				message.what = BUGS_BUNNY_ID;
@@ -535,24 +549,24 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 
-		final int action = event.getAction();
-		switch (action & MotionEvent.ACTION_MASK) {
-			case MotionEvent.ACTION_DOWN: {
-				//Toast.makeText(this,"Touch", Toast.LENGTH_SHORT).show();
-				if (teste1 == 1) {
-					teste1 = 2 ;
-				} else if (teste1 == 2) {
-					teste1 = 0;
-				} else {
-					teste1 = 1;
-				}
-				break;
-			} case MotionEvent.ACTION_MOVE: {
-				//teste1 = (int) event.getX();
-				//teste2 = (int) event.getY();
-				//break;
-			}
-		}
+//		final int action = event.getAction();
+//		switch (action & MotionEvent.ACTION_MASK) {
+//			case MotionEvent.ACTION_DOWN: {
+//				//Toast.makeText(this,"Touch", Toast.LENGTH_SHORT).show();
+//				if (test1 == 1) {
+//					test1 = 2 ;
+//				} else if (test1 == 2) {
+//					test1 = 0;
+//				} else {
+//					test1 = 1;
+//				}
+//				break;
+//			} case MotionEvent.ACTION_MOVE: {
+//				//teste1 = (int) event.getX();
+//				//teste2 = (int) event.getY();
+//				//break;
+//			}
+//		}
 		Log.d(TAG,"onTouch event");
 
 		return true;
@@ -584,7 +598,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 			Toast.makeText(this, "List Cleared", Toast.LENGTH_SHORT).show();
 			
 			// Clear our detected characters
-			objControl = new boolean[30];
+			reportedCharacterAsFound = new boolean[30];
 			detectedCharactersList = new ArrayList<ObjectList>();
 			AdapterTwoLinesImage adapter = new AdapterTwoLinesImage(getApplicationContext(), detectedCharactersList);
 			detectedCharactersListView.setAdapter(adapter);
@@ -627,9 +641,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 					looneyTunesDetector.setCurrentFrame(BaseImage);
 					looneyTunesDetector.drawSquare();
 					looneyTunesDetector.drawMatches();
-					looneyTunesDetector.ProcessFrame();
+					looneyTunesDetector.processFrame();
+					
 					for (int c = 0; c < trainingImages.size(); c++) {
-						if (!detectedCharacters[0] && (looneyTunesDetector.Process( trainingImagesDetector.getDescriptors().get(0), "Bugs") && looneyTunesDetector.clean())) {
+						if (!detectedCharacters[0] && (looneyTunesDetector.process( trainingImagesDetector.getDescriptors().get(0), "Bugs") && looneyTunesDetector.clear())) {
 							detectedCharacters[0] = true;
 							Message message = new Message();
 							message.what = BUGS_BUNNY_ID;

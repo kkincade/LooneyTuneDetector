@@ -14,7 +14,6 @@ import android.hardware.Camera.Size;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
 
 public class ViewExtended extends JavaCameraViewExtended {
 	
@@ -84,8 +83,6 @@ public class ViewExtended extends JavaCameraViewExtended {
         disconnectCamera();
         maxHeight = resolution.height;
         maxWidth = resolution.width;
-        String res = Integer.toString(getHeight()) + " x " + Integer.toString(getWidth());
-        Toast.makeText(getContext(), res, Toast.LENGTH_SHORT).show();
         connectCamera(getWidth(), getHeight());
     }
 }

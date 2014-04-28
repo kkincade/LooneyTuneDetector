@@ -21,23 +21,27 @@ import android.util.Log;
 public class LooneyTunesDetector {
 	
 	private static final String TAG = "LOONEY_TUNES_DETECTOR";
-
+	private static final double MIN_RATIO = (1.0 / 1.5);
+	
+	
+	
 	private Mat currentFrame;
 	private List<Mat> trainingImages;
 	private List<Point> usedKP;
 	private List<KeyPoint> keypoints;
-	private boolean[] flags;
+	private boolean[] flags; // Flags for drawing matches, square, etc.
 	
+	private int numberOfMatchesNeeded = 6;
 	private int goodDetections; // If this is above our criteria for the minimum number of points, then we detected our Looney Tune
 	
 	// Keypoints
-	private MatOfKeyPoint FrameKeypoints;
-	private MatOfKeyPoint inputFrameKeypoints;
+	private MatOfKeyPoint currentFrameKeypoints;
+	private MatOfKeyPoint trainingImageKeypoints;
 	
-	private Mat FrameDescriptors;
-	private List<Mat> inputFrameDescriptors;
-	private Mat previousDescriptors;
-	private List<MatOfDMatch> inputFrameMatches = new ArrayList<MatOfDMatch>();
+	private Mat currentFrameDescriptors;
+	private List<Mat> trainingImagesDescriptorsList;
+	private Mat trainingImageDescriptors;
+	private List<MatOfDMatch> currentFrameMatches = new ArrayList<MatOfDMatch>();
 	
 	// Feature Detection Components
 	private FeatureDetector detector;
@@ -48,89 +52,89 @@ public class LooneyTunesDetector {
 	// Default Constructor
 	LooneyTunesDetector() {
 		flags = new boolean[3];
-		flags[0] = false;
-		flags[1] = false;
+		flags[0] = false; // Draw Matches
+		flags[1] = false; // Draw Squares
 		flags[2] = false;
 				
-		FrameKeypoints = new MatOfKeyPoint();
-		FrameDescriptors = new Mat();
+		currentFrameKeypoints = new MatOfKeyPoint();
+		currentFrameDescriptors = new Mat();
 		
 		usedKP = new ArrayList<Point>();
 
 		goodDetections = 0;
-		detector = FeatureDetector.create(FeatureDetector.FAST);
-		extractor = DescriptorExtractor.create(FeatureDetector.SURF);
+		detector = FeatureDetector.create(FeatureDetector.ORB);
+		extractor = DescriptorExtractor.create(FeatureDetector.ORB);
 		matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
 	}
 	
 
-	// Custom constructor
+	// Custom constructor that accepts a list of training images
 	LooneyTunesDetector(List<Mat> images) {
 		trainingImages = images;
-		inputFrameKeypoints = new MatOfKeyPoint();
-		inputFrameDescriptors = new ArrayList<Mat>();
-		detector = FeatureDetector.create(FeatureDetector.FAST);
-		extractor = DescriptorExtractor.create(FeatureDetector.SURF);
+		trainingImageKeypoints = new MatOfKeyPoint();
+		trainingImagesDescriptorsList = new ArrayList<Mat>();
+		detector = FeatureDetector.create(FeatureDetector.ORB);
+		extractor = DescriptorExtractor.create(FeatureDetector.ORB);
 		matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE);
 	}
 	
 
-	public void ProcessFrame(){
-		detector.detect(currentFrame, FrameKeypoints);
-		extractor.compute(currentFrame, FrameKeypoints, FrameDescriptors);
-		keypoints = FrameKeypoints.toList();
+	public void processFrame(){
+		detector.detect(currentFrame, currentFrameKeypoints);
+		extractor.compute(currentFrame, currentFrameKeypoints, currentFrameDescriptors);
+		keypoints = currentFrameKeypoints.toList();
 	}
 
 	
-	public boolean Process(Mat PreviousDescriptors, String name) {
-		previousDescriptors = PreviousDescriptors;
-		matcher.knnMatch(FrameDescriptors, previousDescriptors, inputFrameMatches, 2);
+	public boolean process(Mat previousDescriptors, String name) {
+		trainingImageDescriptors = previousDescriptors;
+		matcher.knnMatch(currentFrameDescriptors, trainingImageDescriptors, currentFrameMatches, 2);
+//		double minY = 9999, maxY = 0, minX = 9999, maxX = 0;
 		
-		double minY = 9999, maxY = 0, minX = 9999, maxX = 0;
-		
-		for (int i = 0; i < inputFrameMatches.size(); i++) {
-	    	DMatch[] atual = inputFrameMatches.get(i).toArray();
+		for (int i = 0; i < currentFrameMatches.size(); i++) {
+	    	DMatch[] matches = currentFrameMatches.get(i).toArray();
 	    	
-	    	for (int j = 0; j < inputFrameMatches.get(i).rows(); j++) {
-	    		if (atual[0].distance * 2.0 < atual[1].distance) {
-	    			
-    				Point matchedPoint = keypoints.get(atual[0].queryIdx).pt;
-    		
+	    	DMatch bestMatch = matches[0];
+	    	DMatch secondBestMatch = matches[1];
+	    	
+	    	for (int j = 0; j < currentFrameMatches.get(i).rows(); j++) {
+	    		if ((bestMatch.distance / secondBestMatch.distance) < MIN_RATIO) {
+//	    		if (matches[0] * 2.0 < matches[1].distance) {
+    				Point matchedPoint = keypoints.get(matches[0].queryIdx).pt;
 					goodDetections++;
 					usedKP.add(matchedPoint);
-					if (flags[1]) {
-						double x = matchedPoint.x;
-    					double y = matchedPoint.y;
-    				
-	    				if (x < minX) {
-	    					minX = x;
-	    				} else if (x > maxX ) {
-	    					maxX = x;
-	    				}
-	    				
-	    				if (y < minY) {
-	    					minY = y;
-	    				} else if (y > maxY ) {
-	    					maxY = y;
-	    				}
-    				}
+//					if (flags[1]) { // Draw Square
+//						double x = matchedPoint.x;
+//    					double y = matchedPoint.y;
+//    				
+//	    				if (x < minX) {
+//	    					minX = x;
+//	    				} else if (x > maxX ) {
+//	    					maxX = x;
+//	    				}
+//	    				
+//	    				if (y < minY) {
+//	    					minY = y;
+//	    				} else if (y > maxY ) {
+//	    					maxY = y;
+//	    				}
+//    				}
 					
-    				if (flags[0]) { //DrawMatches
-    					Core.circle(currentFrame, keypoints.get(atual[0].queryIdx).pt ,6, new Scalar(255, 0, 255));
+    				if (flags[0]) { // Draw Matches
+    					Core.circle(currentFrame, keypoints.get(matches[0].queryIdx).pt, 6, new Scalar(255, 0, 255));
     				}	
 	    		}
 	    	}
 	    }
 		
-		int pts = 9;
 		
-		if (FrameKeypoints.size().height > 5000) {
-			pts = 17;
-		} else if (FrameKeypoints.size().height > 9000) {
-			pts = 30;
-		}
+//		if (currentFrameKeypoints.size().height > 5000) {
+//			numberOfMatchesNeeded = 17;
+//		} else if (currentFrameKeypoints.size().height > 9000) {
+//			numberOfMatchesNeeded = 20;
+//		}
 		
-		if (goodDetections >= pts) {
+		if (goodDetections >= numberOfMatchesNeeded) {
 			return true;
 		} else {
 			goodDetections = 0;
@@ -144,21 +148,20 @@ public class LooneyTunesDetector {
 	public void drawSquare() { flags[1] = true;	}
 	
 	
-	public boolean clean() {
+	public boolean clear() {
 		goodDetections = 0;
 		return true;
 	}
 
 	
-	public void drawKeypoints(){
-		Features2d.drawKeypoints(currentFrame, FrameKeypoints, currentFrame);
-		//Features2d.drawKeypoints(Frame, FrameKeypoints, Frame, new Scalar(255, 255, 255), Features2d.DRAW_RICH_KEYPOINTS);
+	public void drawKeypoints() {
+		Features2d.drawKeypoints(currentFrame, currentFrameKeypoints, currentFrame, new Scalar(255, 255, 255), Features2d.DRAW_RICH_KEYPOINTS);
 	}
 
 	
 	public void Debug() {
-		Log.d(TAG, "Total Keypoints"+ FrameKeypoints.size().height);
-		Core.putText(currentFrame, "Total Keypoints: " + FrameKeypoints.size(), new Point(10, 100), 5, 1.8, new Scalar(255, 255, 255));
+		Log.d(TAG, "Total Keypoints"+ currentFrameKeypoints.size().height);
+		Core.putText(currentFrame, "Total Keypoints: " + currentFrameKeypoints.size(), new Point(10, 100), 5, 1.8, new Scalar(255, 255, 255));
 	}
 
 
@@ -167,9 +170,9 @@ public class LooneyTunesDetector {
 		for (int c = 0; c < trainingImages.size(); c++) {
 			Mat trainingImage = trainingImages.get(c);
 			Mat trainingImageDescriptors = new Mat();
-			detector.detect(trainingImage, inputFrameKeypoints);
-			extractor.compute(trainingImage, inputFrameKeypoints, trainingImageDescriptors);
-			inputFrameDescriptors.add(trainingImageDescriptors);
+			detector.detect(trainingImage, trainingImageKeypoints);
+			extractor.compute(trainingImage, trainingImageKeypoints, trainingImageDescriptors);
+			trainingImagesDescriptorsList.add(trainingImageDescriptors);
 		}	
 	}
 	
@@ -181,9 +184,9 @@ public class LooneyTunesDetector {
 		goodDetections = 0;
 		return x;
 	}
-	public Mat getKeypoints() { return inputFrameKeypoints; }
+	public Mat getKeypoints() { return trainingImageKeypoints; }
 	public Mat getCurrentFrame() { return currentFrame; }
 	public void setCurrentFrame(Mat frame) { currentFrame = frame; }
-	public List<Mat> getDescriptors() { return inputFrameDescriptors; }
+	public List<Mat> getDescriptors() { return trainingImagesDescriptorsList; }
 
 }

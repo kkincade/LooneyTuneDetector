@@ -21,7 +21,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 /**
  * This is a basic class, implementing the interaction with Camera and OpenCV library.
@@ -380,10 +379,7 @@ public abstract class CameraBridgeViewBaseExtended extends SurfaceView implement
 
         int maxAllowedWidth = (maxWidth != MAX_UNSPECIFIED && maxWidth < surfaceWidth)? maxWidth : surfaceWidth;
         int maxAllowedHeight = (maxHeight != MAX_UNSPECIFIED && maxHeight < surfaceHeight)? maxHeight : surfaceHeight;
-        
-        String res = "1: " + Integer.toString(maxAllowedWidth) + " x "+ Integer.toString(maxAllowedHeight);
-        Toast.makeText(getContext(), res, Toast.LENGTH_SHORT).show();
-        
+
         for (Object size : supportedSizes) {
             int width = accessor.getWidth(size);
             int height = accessor.getHeight(size);

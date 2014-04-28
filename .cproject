@@ -22,23 +22,12 @@
 					<folderInfo id="com.android.toolchain.gcc.771644531.572804004" name="/" resourcePath="">
 						<toolChain id="com.android.toolchain.gcc.85413947" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.1577276810" isAbstract="false" superClass="com.android.targetPlatform"/>
-							<builder id="com.android.builder.493214692" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="obj"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="libs"/>
-								</outputEntries>
-							</builder>
+							<builder enableCleanBuild="false" enabledIncrementalBuild="false" id="com.android.builder.493214692" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder"/>
 							<tool id="com.android.gcc.compiler.1121485015" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
-								<option id="com.android.gcc.option.includePath.496735361" superClass="com.android.gcc.option.includePath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;D:\Dropbox\Workspace\opencv\sdk\native\jni\include&quot;"/>
-								</option>
 								<inputType id="com.android.gcc.inputType.1487176690" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="jni"/>
-					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

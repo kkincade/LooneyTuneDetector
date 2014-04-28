@@ -48,14 +48,13 @@ containing a value of this type.
     }
     public static final class drawable {
         public static final int bugs_bunny=0x7f020000;
-        public static final int daffy_duck=0x7f020001;
-        public static final int elmer_fudd=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int lola_bunny=0x7f020004;
-        public static final int tasmanian_devil=0x7f020005;
-        public static final int tune_squad_logo=0x7f020006;
-        public static final int white=0x7f020007;
-        public static final int yosemite_sam=0x7f020008;
+        public static final int foghorn_leghorn=0x7f020001;
+        public static final int ic_launcher=0x7f020002;
+        public static final int lola_bunny=0x7f020003;
+        public static final int tasmanian_devil=0x7f020004;
+        public static final int tune_squad_logo=0x7f020005;
+        public static final int white=0x7f020006;
+        public static final int yosemite_sam=0x7f020007;
     }
     public static final class id {
         public static final int CleanList=0x7f040007;
