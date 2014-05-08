@@ -159,7 +159,7 @@ public class LooneyTunesDetector {
 	}
 
 	
-	public void Debug() {
+	public void debug() {
 		Log.d(TAG, "Total Keypoints"+ currentFrameKeypoints.size().height);
 		Core.putText(currentFrame, "Total Keypoints: " + currentFrameKeypoints.size(), new Point(10, 100), 5, 1.8, new Scalar(255, 255, 255));
 	}

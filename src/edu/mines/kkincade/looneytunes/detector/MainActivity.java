@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 	private static final int FULL_DETECTION_GONE = 101;
 	
 	private ViewExtended cameraView;
-	private Handler mainHandler; // This Handler answers messages from other threads
+	private Handler threadHandler; // This Handler answers messages from other threads
 
 	// Full Detection
 	private LinearLayout Loading;
@@ -145,18 +145,18 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 		detectedCharactersListView.setAdapter(adapter);
 		
 		// Message handler for threads
-		mainHandler = new MainHandler(this);
+		threadHandler = new ThreadHandler(this);
 	}
 
 	
 	/** This handler receives messages from other threads. It is notified with a message when a thread has
 	 * detected a Looney Tunes character. Based on which thread sent the message, it creates an appropriate
 	 * CharacterDialog. **/
-	private static class MainHandler extends Handler {
+	private static class ThreadHandler extends Handler {
 		private final WeakReference<MainActivity> mainActivityContext;
 		private MainActivity mainActivity;
 		
-		public MainHandler(MainActivity context) {
+		public ThreadHandler(MainActivity context) {
 			mainActivityContext = new WeakReference<MainActivity>((MainActivity) context);
 			mainActivity = mainActivityContext.get();
 		}
@@ -292,7 +292,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 						Message message = new Message();
 						message.what = BUGS_BUNNY_ID;
 						message.obj = looneyTuneDetector.getNumberOfGoodDetections();
-						mainHandler.sendMessage(message);
+						threadHandler.sendMessage(message);
 					}
 				}
 			}, BUGS_BUNNY);
@@ -320,7 +320,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 						Message message = new Message();
 						message.what = LOLA_BUNNY_ID;
 						message.obj = looneyTuneDetector.getNumberOfGoodDetections();
-						mainHandler.sendMessage(message);
+						threadHandler.sendMessage(message);
 					}
 				}
 			}, LOLA_BUNNY);
@@ -376,7 +376,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 						Message message = new Message();
 						message.what = YOSEMITE_SAM_ID;
 						message.obj = looneyTuneDetector.getNumberOfGoodDetections();
-						mainHandler.sendMessage(message);
+						threadHandler.sendMessage(message);
 					}
 				}
 			}, YOSEMITE_SAM);
@@ -404,7 +404,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 						Message message = new Message();
 						message.what = TASMANIAN_DEVIL_ID;
 						message.obj = looneyTuneDetector.getNumberOfGoodDetections();
-						mainHandler.sendMessage(message);
+						threadHandler.sendMessage(message);
 					}
 				}
 			}, TASMANIAN_DEVIL);
@@ -426,10 +426,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				Message message = new Message();
 				message.what = BUGS_BUNNY_ID;
 				message.obj=looneyTunesDetector.getNumberOfGoodDetections();
-				mainHandler.sendMessage(message);
+				threadHandler.sendMessage(message);
 			}
 			
-			if (debug) { looneyTunesDetector.Debug(); }
+			if (debug) { looneyTunesDetector.debug(); }
 			
 			looneyTunesDetector.getCurrentFrame();
 			
@@ -618,7 +618,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 			public void run() {
 				Message VISIBLE = new Message();
 				VISIBLE.what = FULL_DETECTION_VISIBLE;
-				mainHandler.sendMessage(VISIBLE);
+				threadHandler.sendMessage(VISIBLE);
 
 				String fileName = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Photo/temp_picture_" + "processing" + ".jpg";
 
@@ -648,7 +648,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 							detectedCharacters[0] = true;
 							Message message = new Message();
 							message.what = BUGS_BUNNY_ID;
-							mainHandler.sendMessage(message);
+							threadHandler.sendMessage(message);
 						}
 					}
 					BaseImage.release();
@@ -658,7 +658,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 				
 				Message GONE = new Message();
 				GONE.what = FULL_DETECTION_GONE;
-				mainHandler.sendMessage(GONE);
+				threadHandler.sendMessage(GONE);
 			}
 		}, "FullDetection Thread");
 
