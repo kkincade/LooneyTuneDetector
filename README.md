@@ -1,8 +1,5 @@
-SimpsonDetector
-===============
-This beta application was written in a short period of time and is part of a paper presented at PUC Minas to the discipline of Digital Image Processing in the degree course of Computer Science.
+Looney Tune Detector
+====================
+This project utilized OpenCV in an Android setting to recognize trained images of Looney Tune's characters. The application used the Computer Vision feature detection technique to determine if a known Looney Tune's character was in the field of vision of the mobile device's camera. 
 
-The paper proposed the study and implementation of computer vision techniques and application in Android. We then proposed a method using SURF, KNN and parallel processing. The program was relatively efficient in several tests, but due to the fact the characters are very similar we have to let the algorithm insensitive, which had difficult the detection in various situations.
-The faults present are viable for the future study and research with the goal to improve and propose new solutions.
-
-Works with Homer, Marge and Otto.
+This project served as a preliminary educational tool for the CityScape application as a part of my master's program.
